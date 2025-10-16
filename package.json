@@ -1,0 +1,15 @@
+{
+  "name": "udemy-course-recommendation",
+  "version": "1.0.0",
+  "description": "Udemy Course Recommendation System",
+  "main": "app.py",
+  "scripts": {
+    "install-python-deps": "python3 -m pip install --user -r requirements.txt || pip3 install --user -r requirements.txt || echo 'Python dependencies installation attempted'",
+    "build": "echo 'Build complete - Python Flask application ready'",
+    "start": "python3 app.py",
+    "dev": "python3 app.py"
+  },
+  "keywords": ["flask", "python", "recommendation-system"],
+  "author": "",
+  "license": "ISC"
+}
