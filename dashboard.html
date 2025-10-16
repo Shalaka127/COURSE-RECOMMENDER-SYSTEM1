@@ -2,23 +2,168 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-     <!-- datasource -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
-
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-
     <title>Course Recommendation | Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateX(4px);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+
+        .dashboard-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 2rem 0 3rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .full-width-chart {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .full-width-chart:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 1.75rem;
+                margin: 1.5rem 0 2rem 0;
+            }
+
+            .chart-card {
+                padding: 1.5rem;
+            }
+
+            .chart-title {
+                font-size: 1rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chart-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .chart-card:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
+        .chart-card:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
+        .chart-card:nth-child(3) { animation-delay: 0.3s; opacity: 0; }
+        .chart-card:nth-child(4) { animation-delay: 0.4s; opacity: 0; }
+        .chart-card:nth-child(5) { animation-delay: 0.5s; opacity: 0; }
+        .chart-card:nth-child(6) { animation-delay: 0.6s; opacity: 0; }
+    </style>
 </head>
 
 <body>
@@ -32,126 +177,84 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                        <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
                     </li>
-
                 </ul>
-
             </div>
         </div>
     </nav>
-    <div class="row">
 
-        <!-- Number of Subscribers Domain Wise -->
+    <div class="container dashboard-container">
+        <h1 class="dashboard-title">Analytics Dashboard</h1>
+        <div class="row">
 
-        <div class="col-md-4 col-sm-6">
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Subscribers by Domain</h3>
+                    <div class="chart-container">
+                        <canvas height="400" width="400" id="chart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-            <div class="card-body">
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Number of Subscribers Domain Wise</label>
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="400" width="400" id="chart"></canvas>
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Courses by Level</h3>
+                    <div class="chart-container">
+                        <canvas height="400" width="400" id="chart2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Subscribers by Year</h3>
+                    <div class="chart-container">
+                        <canvas height="200" width="200" id="chart3"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Revenue by Year</h3>
+                    <div class="chart-container">
+                        <canvas height="400" width="400" id="chart4"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Revenue by Month</h3>
+                    <div class="chart-container">
+                        <canvas height="400" width="400" id="chart5"></canvas>
+                    </div>
                 </div>
             </div>
 
 
-        </div>
-
-        
-        <!-- Number of Courses Level Wise -->
-        <div class="col-md-4 col-sm-6">
-
-            <div class="card-body">
-
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Number of Courses Level Wise</label>
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="400" width="400" id="chart2"></canvas>
+            <div class="col-md-4 col-sm-6">
+                <div class="chart-card">
+                    <h3 class="chart-title">Subscribers by Month</h3>
+                    <div class="chart-container">
+                        <canvas height="400" width="400" id="chart6"></canvas>
+                    </div>
                 </div>
             </div>
 
-
-        </div>
-
-        <!-- >Number of Subscribers Year Wise-->
-
-        <div class="col-md-4 col-sm-6">
-
-        
-
-            <div class="card-body">
-
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Number of Subscribers Year Wise</label>
-    
-                
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="200" width="200" id="chart3"></canvas>
+            <div class="col-md-12">
+                <div class="full-width-chart">
+                    <h3 class="chart-title">Subscribers Enrolled by Subject Category</h3>
+                    <div class="chart-container">
+                        <canvas id="chart7"></canvas>
+                    </div>
                 </div>
             </div>
-
-
         </div>
-
-        <!--Profit Year Wise-->
-
-        <div class="col-md-4 col-sm-6">
-
-            <div class="card-body">
-
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Profit Gained Year Wise</label>
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="400" width="400" id="chart4"></canvas>
-                </div>
-            </div>
-
-
-        </div>
-
-        <!-- Profit Month Wise -->
-
-        <div class="col-md-4 col-sm-6">
-
-            <div class="card-body">
-
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Profit Earned Month Wise</label>
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="400" width="400" id="chart5"></canvas>
-                </div>
-            </div>
-
-
-        </div>
-
-
-        <!--Subscribers Count Month Wise-->
-
-
-        <div class="col-md-4 col-sm-6">
-
-            <div class="card-body">
-
-                <label for="banana" style="text-align:center;font-size:1.5rem;font-weight: bold;">Subscribers Count Month Wise</label>
-                <div class="chart-container my-3" style="position: relative;">
-                    <canvas height="400" width="400" id="chart6"></canvas>
-                </div>
-            </div>
-
-
-
-        </div>
-
-        <!--Number of Subscribers enrolled per subject category-->
-
-        <div class = "col-md-12">
-            <div class="chart-container my-3">
-                <label for="banana" style="text-align:center;font-size:1.3rem;font-weight: bold;">Number of Subscribers enrolled per subject category</label>
-                <canvas id="chart7"></canvas>
-            </div> 
-        </div>
-
-
-
     </div>
 
     {%block javascript%}
